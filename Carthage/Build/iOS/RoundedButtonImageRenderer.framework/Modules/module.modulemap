@@ -1,0 +1,10 @@
+framework module RoundedButtonImageRenderer {
+  umbrella header "RoundedButtonImageRenderer.h"
+
+  export *
+  module * { export * }
+}
+
+module RoundedButtonImageRenderer.Swift {
+    header "RoundedButtonImageRenderer-Swift.h"
+}
