@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		810039A71E8851BC0068A91B /* RoundedButtonImageRenderer.h in Headers */ = {isa = PBXBuildFile; fileRef = 810039A51E8851BC0068A91B /* RoundedButtonImageRenderer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		810039AE1E8851E20068A91B /* RoundedButtonImageRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 810039AD1E8851E20068A91B /* RoundedButtonImageRenderer.swift */; };
-		810039B01E88522D0068A91B /* RoundedButtonImageRendererExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 810039AF1E88522D0068A91B /* RoundedButtonImageRendererExamples.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -17,7 +16,7 @@
 		810039A51E8851BC0068A91B /* RoundedButtonImageRenderer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RoundedButtonImageRenderer.h; sourceTree = "<group>"; };
 		810039A61E8851BC0068A91B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		810039AD1E8851E20068A91B /* RoundedButtonImageRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoundedButtonImageRenderer.swift; sourceTree = "<group>"; };
-		810039AF1E88522D0068A91B /* RoundedButtonImageRendererExamples.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoundedButtonImageRendererExamples.swift; sourceTree = "<group>"; };
+		81C4F8F61FB94C5D0069DDBA /* Examples.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Examples.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,7 +52,7 @@
 				810039A51E8851BC0068A91B /* RoundedButtonImageRenderer.h */,
 				810039A61E8851BC0068A91B /* Info.plist */,
 				810039AD1E8851E20068A91B /* RoundedButtonImageRenderer.swift */,
-				810039AF1E88522D0068A91B /* RoundedButtonImageRendererExamples.swift */,
+				81C4F8F61FB94C5D0069DDBA /* Examples.playground */,
 			);
 			path = RoundedButtonImageRenderer;
 			sourceTree = "<group>";
@@ -140,7 +139,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				810039AE1E8851E20068A91B /* RoundedButtonImageRenderer.swift in Sources */,
-				810039B01E88522D0068A91B /* RoundedButtonImageRendererExamples.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -306,6 +304,7 @@
 				810039AC1E8851BC0068A91B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

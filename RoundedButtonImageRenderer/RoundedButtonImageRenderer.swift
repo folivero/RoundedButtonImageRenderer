@@ -1,69 +1,138 @@
-//  RoundedButtonImageRenderer.swift
-//  Created by Fernando Olivero on 26/03/2017.
-//  Copyright © 2017 Fernando Olivero. All rights reserved.
 import Foundation
 import UIKit
 
 public struct RoundedButtonImageRenderer {
-    let borderWidth: CGFloat?
-    let borderColor: UIColor?
-    let backgroundColor: UIColor
-    let fillColor: UIColor
-    let margin: CGFloat
-    let paddingH: CGFloat
-    let paddingV: CGFloat
-    let text: String
-    let textColor: UIColor
-    let font: UIFont
-    let cornerRadius: CGFloat
-    
-    var image: UIImage? {
-        var image: UIImage?
-        let lineW: CGFloat = borderWidth ?? 0.0
+    public static func renderImage(text: String, layout: LayoutSpecs, colors: ColorSpecs) -> UIImage? {
+        let renderer = RoundedButtonImageRenderer()
+        let attributes = renderer.makeAttributes(font: layout.font, text: colors.text)
+        let textSize = renderer.makeTextSize(text: text, attributes: attributes)
+        let textFrame = renderer.makeTextFrame(specs: layout, textSize: textSize)
+        let roundedFrame = renderer.makeRoundedRectFrame(specs: layout, textSize: textSize)
+        let imageSize = CGSize(
+            width: layout.margin + roundedFrame.width + layout.margin,
+            height:  layout.margin + roundedFrame.height + layout.margin
+        )
+        return renderer.render(
+            string: text,
+            size: imageSize,
+            background: colors.background,
+            fill: colors.fill,
+            roundedRectFrame: roundedFrame,
+            textFrame: textFrame,
+            attributes: attributes,
+            cornerRadius: layout.cornerRadius,
+            lineWidth: layout.borderWidth,
+            lineColor: colors.border
+        )
+    }
+}
+
+public extension RoundedButtonImageRenderer {
+    public struct ColorSpecs {
+        let border: UIColor?
+        let background: UIColor
+        let fill: UIColor
+        let text: UIColor
         
+        public init(border: UIColor? = nil, background: UIColor, fill: UIColor, text: UIColor) {
+            self.border = border
+            self.background = background
+            self.fill = fill
+            self.text = text
+        }
+    }
+    
+    public struct LayoutSpecs {
+        let cornerRadius: CGFloat
+        let borderWidth: CGFloat
+        let margin: CGFloat
+        let paddingH: CGFloat
+        let paddingV: CGFloat
+        let font: UIFont
+        
+        public init(
+            cornerRadius: CGFloat,
+            borderWidth: CGFloat,
+            margin: CGFloat,
+            paddingH: CGFloat,
+            paddingV: CGFloat,
+            font: UIFont)
+        {
+            self.cornerRadius = cornerRadius
+            self.borderWidth = borderWidth
+            self.margin = margin
+            self.paddingH = paddingH
+            self.paddingV = paddingV
+            self.font = font
+        }
+    }
+}
+
+private extension RoundedButtonImageRenderer {
+    func makeTextSize(text: String, attributes: [String: Any]) -> CGSize {
         let string = NSString(string: text)
+        let rawTextSize = string.size(attributes: attributes)
+        return CGSize(width: ceil(rawTextSize.width), height: ceil(rawTextSize.height))
+    }
+    
+    func makeTextFrame(specs: LayoutSpecs, textSize: CGSize) -> CGRect {
+        return CGRect(
+            x: specs.margin + specs.borderWidth + specs.paddingH,
+            y: specs.margin + specs.borderWidth + specs.paddingV,
+            width: textSize.width,
+            height: textSize.height
+        )
+    }
+
+    func makeRoundedRectFrame(specs: LayoutSpecs, textSize: CGSize) -> CGRect {
+        return CGRect(
+            x: specs.margin,
+            y: specs.margin,
+            width: specs.borderWidth + specs.paddingH + textSize.width + specs.paddingH + specs.borderWidth,
+            height: specs.borderWidth + specs.paddingV + textSize.height + specs.paddingV + specs.borderWidth
+        )
+    }
+    
+    func makeAttributes(font: UIFont, text: UIColor) -> [String: AnyObject] {
         let style = NSMutableParagraphStyle()
         style.alignment = .center
-        let attributes = [
+        return [
             NSFontAttributeName: font,
-            NSForegroundColorAttributeName: textColor,
+            NSForegroundColorAttributeName: text,
             NSParagraphStyleAttributeName: style
         ]
-        let rawTextSize = string.size(attributes: attributes)
-        let textSize = CGSize(width: ceil(rawTextSize.width), height: ceil(rawTextSize.height))
-        
-        let textBox = CGRect(x: margin + lineW + paddingH, y: margin + lineW + paddingV, width: textSize.width, height: textSize.height)
-        
-        let roundedRectBox = CGRect(
-            x: margin,
-            y: margin,
-            width: lineW + paddingH + textSize.width + paddingH + lineW,
-            height: lineW + paddingV + textSize.height + paddingV + lineW)
-        
-        let boundingBox = CGRect(
-            x: 0.0,
-            y: 0.0,
-            width: margin + roundedRectBox.width + margin,
-            height:  margin + roundedRectBox.height + margin)
-        
-        UIGraphicsBeginImageContextWithOptions(boundingBox.size, true, 0.0)
+    }
+    
+    func render(
+        string: String,
+        size: CGSize,
+        background: UIColor,
+        fill: UIColor,
+        roundedRectFrame: CGRect,
+        textFrame: CGRect,
+        attributes: [String: Any],
+        cornerRadius: CGFloat,
+        lineWidth: CGFloat,
+        lineColor: UIColor?) -> UIImage?
+    {
+        var image: UIImage?
+        UIGraphicsBeginImageContextWithOptions(size, true, 0.0)
         if let context = UIGraphicsGetCurrentContext() {
-            context.setFillColor(backgroundColor.cgColor)
-            context.fill(boundingBox)
-            context.addPath(UIBezierPath(roundedRect: roundedRectBox, cornerRadius: cornerRadius).cgPath)
-            context.setFillColor(fillColor.cgColor)
+            context.setFillColor(background.cgColor)
+            context.fill(CGRect(origin: .zero, size: size))
+            context.addPath(UIBezierPath(roundedRect: roundedRectFrame, cornerRadius: cornerRadius).cgPath)
+            context.setFillColor(fill.cgColor)
             context.fillPath()
-            if let lineColor = borderColor {
-                context.setLineWidth(lineW)
+            if let lineColor = lineColor {
+                context.setLineWidth(lineWidth)
                 context.setStrokeColor(lineColor.cgColor)
-                context.addPath(UIBezierPath(roundedRect: roundedRectBox, cornerRadius: cornerRadius).cgPath)
+                context.addPath(UIBezierPath(roundedRect: roundedRectFrame, cornerRadius: cornerRadius).cgPath)
                 context.strokePath()
             }
-            string.draw(in: textBox, withAttributes: attributes)
+            string.draw(in: textFrame, withAttributes: attributes)
             image = UIGraphicsGetImageFromCurrentImageContext()
         }
         UIGraphicsEndImageContext()
-        
         return image
     }
 }
